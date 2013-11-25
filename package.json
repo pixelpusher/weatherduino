@@ -1,0 +1,27 @@
+{
+  "name": "weatherduino",
+  "version": "0.0.0",
+  "description": "weather app",
+  "main": "index.js",
+  "scripts": {
+    "test": "say sorry"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:pixelpusher/weatherduino.git"
+  },
+  "keywords": [
+    "javascript",
+    "nodejs",
+    "arduino",
+    "weather"
+  ],
+  "author": "Evan Raskob",
+  "license": "AGPL 3.0+",
+  "bugs": {
+    "url": "https://github.com/pixelpusher/weatherduino/issues"
+  },
+  "dependencies": {
+    "johnny-five": "~0.7.3"
+  }
+}
