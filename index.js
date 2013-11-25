@@ -3,7 +3,6 @@ var http = require("http");
 
 var board = new five.Board();
 var led;
-var me = this;
 
 
 board.on("ready", function() {
@@ -23,18 +22,19 @@ board.on("ready", function() {
 		
 		req.on("data", function(data) 
 		{ 
-			var obj = JSON.parse(data);
 			var pulseTime = 200;
 			
-			//console.log(obj.response);
-			console.log("current temp in c: " +  obj["current_observation"]["temp_c"]);
+			try {
 			
-			// flash LED
-			
-			// get temp in C as whole number (integer)
-			var tempC = parseInt(obj["current_observation"]["temp_c"], 10); 
-			
-	
+				var obj = JSON.parse(data);
+				
+				//console.log(obj.response);
+				console.log("current temp in c: " +  obj["current_observation"]["temp_c"]);
+				
+				// get temp in C as whole number (integer)
+				var tempC = parseInt(obj["current_observation"]["temp_c"], 10); 
+
+				// flash LED					
 				console.log("pulse");
 				// "pulse" the led in a looping interval
 				// Interval defaults to 1000ms
@@ -46,6 +46,21 @@ board.on("ready", function() {
 					led.stop().off();
 					console.log("off");
 				}, pulseTime*tempC*2 );
+				
+			}
+			// handle errors if data is broken
+			// do 3 quick blinks if so
+			catch (error)
+			{
+				console.log("JSON Error! " + error);
+				led.strobe(pulseTime/4);
+				
+				// Turn off the led pulse loop after x milliseconds
+				setTimeout( function() {				
+					led.stop().off();
+					console.log("off");
+				}, pulseTime/4*3*2 );
+			}
 	
 		});
 		
