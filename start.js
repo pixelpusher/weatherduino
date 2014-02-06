@@ -4,8 +4,11 @@ var led;
 
 
 board.on("ready", function() {
+
 	led = new five.Led(13);
   	var  button = new five.Button(2);
+
+	 led.strobe(100);
 
   // Button Event API
 
@@ -25,5 +28,10 @@ board.on("ready", function() {
   // "up" the button is released
   button.on("up", function() {
     console.log("up");
+    
+    
+    led.strobe(100);
+    
   });
+  
 });

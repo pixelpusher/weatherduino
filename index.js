@@ -14,8 +14,11 @@ board.on("ready", function() {
   // "down" the button is pressed
   button.on("down", function() {
 	console.log("down");
+/*
+ * You need to replce the xxxxxxx with your api key to make this work!
+ */
 
-	http.get("http://api.wunderground.com/api/b84113576c23be9c/conditions/q/UK/London.json", function(req) 
+http.get("http://api.wunderground.com/api/xxxxxxxxx/conditions/q/UK/London.json", function(req) 
 	{
 		// set encoding so this comes out as text instead of goop
 		req.setEncoding('utf8');
@@ -32,7 +35,7 @@ board.on("ready", function() {
 				console.log("current temp in c: " +  obj["current_observation"]["temp_c"]);
 				
 				// get temp in C as whole number (integer)
-				var tempC = parseInt(obj["current_observation"]["temp_c"], 10); 
+				var tempC = parseInt( obj["current_observation"]["temp_c"], 10); 
 
 				// flash LED					
 				console.log("pulse");
@@ -53,6 +56,7 @@ board.on("ready", function() {
 			catch (error)
 			{
 				console.log("JSON Error! " + error);
+				console.log(data);
 				led.strobe(pulseTime/4);
 				
 				// Turn off the led pulse loop after x milliseconds
