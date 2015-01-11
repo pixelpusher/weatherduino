@@ -1,14 +1,12 @@
 var five  = require("johnny-five");
 var board = new five.Board();
-var led;
-
 
 board.on("ready", function() {
 
-	led = new five.Led(13);
-  	var  button = new five.Button(2);
+    var led = new five.Led(13);
+  	var button = new five.Button(2);
 
-	 led.strobe(100);
+    led.strobe(100);
 
   // Button Event API
 

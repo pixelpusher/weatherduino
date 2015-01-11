@@ -12,13 +12,24 @@
 var port = 8080;
 
 // start the server
-var connect = require('connect'),
-    app = connect().use(connect.static(__dirname)).listen(8080), // port 8080
-    io = require('socket.io').listen(app);
 
+var connect = require('connect');
+var serveStatic = require('serve-static');
+var server = connect();
+
+// print out the directory we're in:
+console.log("Server directory:" + __dirname);
+
+// start the app that will server pages in the folder
+var app = server.use(serveStatic(__dirname)).listen(port);
+
+// start websockets listening to our app
+var io = require('socket.io').listen(app);
+
+// print out some info
 console.log("http server on " + port);
 
-
+console.log(getIPAddresses());
 
 /*
 //
