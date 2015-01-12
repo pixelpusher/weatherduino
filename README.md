@@ -1,4 +1,4 @@
-== Description==
+== Description ==
 
 Experimental code using nodeJS and the Arduino using Johnny-five.
 
@@ -8,6 +8,9 @@ For Ravensbourne's Web Media BA course.
 * buzzersound.js: using a button, Arduino, and sound playback (on the computer)
 * index.js: finished example using WeatherUnderground.com's JSON API to make a simple thermometer
 
-==Installation==
+== Installation ==
 
 download all the project files and run *npm install* to install the required node modules.
+
+then try "http://localhost:8080/client-example.html" in your web browser
+

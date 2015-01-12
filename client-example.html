@@ -42,7 +42,7 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <!-- jquery -->
-    <script type="text/javascript" src="lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-1.11.2.min.js"></script>
 
 
     <!-- finally, our script! -->
@@ -63,9 +63,10 @@
       socket.on('connect', function() 
       {
 
-        // draw a rectangle when we connect
+        // draw a rectangle when we connect and fade it in
         
-        var myRect =  draw.rect(100, 100).attr({ fill: '#f06' });
+        var myRect =  draw.rect(100, 100).attr({ fill: '#fff' });
+        myRect.animate(1200).attr({ fill: '#f06' });
         
         //
         // we can send data back to the server:
@@ -84,6 +85,8 @@
           
           // do something... choose random hue and fade over 1 sec
           
+        console.log("received data for message : " + data);    
+            
           var hue = (Math.random()*16).toString(16);
           rect.animate(1000).attr({ fill: '#' + hue + 'fb' })
         });

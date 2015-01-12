@@ -24,6 +24,9 @@
   "dependencies": {
     "johnny-five": "~0.7.3",
     "lame": "~1.0.3",
-    "speaker": "~0.0.10"
+    "speaker": "~0.0.10",
+    "socket.io": "~1.2.1",
+    "connect": "~3.3.4",
+    "serve-static": "~1.8.0"
   }
 }
