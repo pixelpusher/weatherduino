@@ -88,8 +88,26 @@
         console.log("received data for message : " + data);    
             
           var hue = (Math.random()*16).toString(16);
-          rect.animate(1000).attr({ fill: '#' + hue + 'fb' })
+          myRect.animate(1000).attr({ fill: '#' + hue + 'fb' })
         });
+        
+        
+        
+        //
+        // make this receive message from a sensor
+        //
+        socket.on('position', function (data) 
+        {
+
+          // do something... choose random hue and fade over 1 sec
+
+          console.log("received data for message : " + data);    
+
+          // change position... somehow...
+          // http://documentup.com/wout/svg.js#manipulating-elements
+          // myRect.animate(1000).attr({ fill: '#' + hue + 'fb' })
+        });
+        
 
       });
     </script>
