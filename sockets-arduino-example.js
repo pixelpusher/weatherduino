@@ -1,10 +1,14 @@
 /* 
  This server connects to web pages
- over a node websocket using socket.io
+ over a node websocket using socket.io.  It also
+ connects to an arduino so you can have something physical
+ triggering animations or other visual actions on your phone
+ or computer.
 
- With node.js installed, 
- start the server with the command:
- "node sockets-example.js"
+ With node.js installed, start the server with the command:
+ "node sockets-arduino-example.js"
+ 
+* by Evan Raskob info@pixelist.info 2015
 */
 
 ///////////////////////////////////////////////////////////////
@@ -14,7 +18,8 @@ var five = require("johnny-five"); // load arduino library
 
 var board = new five.Board(
   {
-    port: "/dev/cu.usbmodemfd121"
+    //port: "/dev/cu.usbmodemfd121"
+    port: "/dev/cu.usbmodemfa131"
     //port: "/dev/cu.usbserial-A8008kUM"
   }
 ); // this is the arduino
@@ -74,26 +79,19 @@ var server = connect();
 // print out the directory we're in:
 console.log("Server directory:" + __dirname);
 
-// start the app that will server pages in the folder
+// we'll use the current directory as the root of the web server.
+
+// start the app that will server pages in the current directory
 var app = server.use(serveStatic(__dirname)).listen(port);
 
-// start websockets listening to our app
+// start websockets listening to our app so we can speak with clients
 var io = require('socket.io').listen(app);
 
 // print out some info
 console.log("http server on " + port);
 
+// for testing - just show us the IP address the server is running on
 console.log(getIPAddresses());
-
-/*
-//
-// send some values to all connected browsers:
-//
-io.sockets.emit('voteData', 
-                { 'field': value,
-                  'another' : somethingElse                  
-                });
-*/
 
 
 //
@@ -102,10 +100,18 @@ io.sockets.emit('voteData',
 
 io.sockets.on('connection', function (socket) 
 {
-  
-  // for testing - just show us the IP address the server is running on
-  // console.log( getIPAddresses() );
 
+  
+  /*
+//
+// send some values to all connected browsers:
+//
+io.sockets.emit('voteData', 
+                { 'field': value,
+                  'another' : somethingElse                  
+                });
+*/
+  
   socket.on('something', function (data) {
     console.log(data)
   });

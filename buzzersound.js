@@ -1,17 +1,34 @@
+/* 
+ This server connects to an arduino so you can use a button or sensor
+ to start or stop playing a sound on your computer.
+
+ With node.js installed, start the server with the command:
+ "node buzzersound.js"
+
+* by James Uren and Evan Raskob, info@pixelist.info 2013-2015
+*/
+
+
 var five  = require("johnny-five");
 var http = require("http");
 var fs = require('fs');
 var lame = require('lame');
 var Speaker = require('speaker');
 
-var board = new five.Board();
-var led;
+var board = new five.Board(
+  {
+    //port: "/dev/cu.usbmodemfd121"
+    //port: "/dev/cu.usbserial-A8008kUM"
+    port: "/dev/cu.usbmodemfa131"
+  }
+); // this is the arduino
+
 var soundFile = process.argv[2] || "sounds/coin.mp3"; // Sound filename
 
 console.log("Sound file is " + soundFile);
 
 board.on("ready", function() {
-	led = new five.Led(13);
+	var led = new five.Led(13);
   	var  button = new five.Button(2);
 
   	// "down" the button is pressed

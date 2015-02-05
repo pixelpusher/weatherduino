@@ -47,7 +47,11 @@
 
     <!-- finally, our script! -->
     <script type="text/javascript">
-
+      //
+      // by Evan Raskob info@pixelist.info 2015
+      //
+      
+      
       //change LOCALHOST to your IP to enable connecting from other devices
 
       var socket = io.connect('http://localhost:8080');
@@ -85,10 +89,12 @@
           
           // do something... choose random hue and fade over 1 sec
           
-        console.log("received data for message : " + data);    
+          console.log("received data for message : " + data);    
             
-          var hue = (Math.random()*16).toString(16);
-          myRect.animate(1000).attr({ fill: '#' + hue + 'fb' })
+          var redVal = (Math.random()*16).toString(16);
+          console.log("red value: " + redVal);
+          
+          myRect.animate(1000).attr({ fill: '#' + redVal + 'fb' })
         });
         
         
@@ -105,7 +111,7 @@
 
           // change position... somehow...
           // http://documentup.com/wout/svg.js#manipulating-elements
-          // myRect.animate(1000).attr({ fill: '#' + hue + 'fb' })
+          // myRect.animate(1000).attr({ fill: '#afb' })
         });
         
 

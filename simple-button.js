@@ -1,8 +1,9 @@
 var five = require("johnny-five"); // load library
 var board = new five.Board(
   {
-    port: "/dev/cu.usbmodemfd121"
+    //port: "/dev/cu.usbmodemfd121"
     //port: "/dev/cu.usbserial-A8008kUM"
+    port: "/dev/cu.usbmodemfa131"
   }
 ); // this is the arduino
 
@@ -24,9 +25,21 @@ var setupButton = function() {
     }
   );
   
-
+  var buttonState = false;
+  
   button.on("down", function() {    
-      led.on();
+    
+    buttonState = !buttonState;
+    if (buttonState)
+    {
+        console.log("button TRUE!");
+        led.on();
+    }
+    else
+    {
+      console.log("button FALSE");
+      led.off();
+    }
       console.log("button pushed");
   });
             

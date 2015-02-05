@@ -1,3 +1,13 @@
+/*
+ * A starting point for using buttons using
+ * NodeJS, Johnny-Five and Arduino
+ *
+ * With node.js installed, start the server with the command:
+ * "node buzzersound.js"
+ *
+ * by Evan Raskob info@pixelist.info 2015
+ */
+
 var five  = require("johnny-five");
 var board = new five.Board();
 
@@ -6,7 +16,6 @@ board.on("ready", function() {
     var led = new five.Led(13);
   	var button = new five.Button(2);
 
-    led.strobe(100);
 
   // Button Event API
 
@@ -26,10 +35,6 @@ board.on("ready", function() {
   // "up" the button is released
   button.on("up", function() {
     console.log("up");
-    
-    
-    led.strobe(100);
-    
   });
   
 });
