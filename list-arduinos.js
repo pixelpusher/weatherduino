@@ -7,20 +7,21 @@
 
 var serialport = require("serialport");
 
-var rport = /usb|acm|com/i;
+var rport = /usb|acm|^com/i;
 
 serialport.list(function(err, result) {
-  var ports,
+  var ports = [],
       length;
   
   var i=0;
   
   while (i < result.length)
   {
-    console.log("found potential port:" + result[i]);
+    var portName = result[i].comName;
+
+    console.log("found potential port:" + portName);
     console.log();
     
-    var portName = result[i].comName(val.comName);
     
      if (rport.test(portName))
      {
