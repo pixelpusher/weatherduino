@@ -6,10 +6,12 @@
 // 
 
 
-var serialport = require("serialport");
-var rport = /usb|acm|$com/i;
+var serialport = require("serialport"); // serialport library
+
+var rport = /usb|acm|$com/i;  // pattern to match in strings
 
 var portName = "";
+
 var arduino = {}; // the empty arduino object that we'll get from the serial port later
 
 
@@ -18,7 +20,7 @@ serialport.list(function(err, result) {
   var ports = [],
       length;
   
-  console.log(result);
+  //console.log(result);
   
   result.forEach(function(port) {
     
