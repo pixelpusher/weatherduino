@@ -1,0 +1,135 @@
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>SVG Import Tester</title>
+      <style type="text/css">
+         body 
+         {
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin: 10%;
+            background: #eee;
+         }
+         div
+         {
+          max-width: 80%;
+          margin: 4% auto;
+         }
+      </style>
+
+   </head>
+   <body>
+    <div>Importing an SVG from Illustrator to animate using SVG.js</div>
+
+   <!-- SVG drawing for javscript fun -->
+   <div id="drawing">
+   </div>
+   </body>
+   
+   <!-- svg.js -->
+   <script language="javascript" src="../lib/svg.min.js"></script>
+  
+  <!-- svg.js parser from https://github.com/wout/svg.parser.js -->
+   <script language="javascript" src="../lib/svg.parser.min.js"></script>
+   
+
+
+   <!-- https://github.com/wout/svg.import.js -->
+   <script language="javascript" src="../lib/svg.import.1.0.1.min.js"></script>
+   
+   <!-- jquery -->
+   <script type="text/javascript" src="../lib/jquery-1.11.2.min.js"></script>
+
+   <!-- multiline strings from https://github.com/sindresorhus/multiline -->
+   <script type="text/javascript" src="../lib/multiline.browser.js"></script>   
+   
+
+   <!-- finally, our script! -->
+   <script type="text/javascript">
+      //
+      // (c) 2015 Evan Raskob e.raskob@rave.ac.uk 
+      //
+
+   $(function() {
+      
+      // load out SVG - paste from Illustrator here
+      // see https://github.com/sindresorhus/multiline for examples
+      //
+      // see this image for Adobe Illustrator export settings:
+      // https://drive.google.com/file/d/0B01q99xxaTw_RkRHWU5wS2tpbjA/view?usp=sharing
+
+
+      var rawSVG = multiline(function(){
+      /*
+      <svg version="1.1"
+           width="744.09448"
+           height="1052.3622"
+           id="svg2">
+         <g
+            id="layer1">
+            <rect
+                  width="200"
+                  height="100"
+                  x="0"
+                  y="40"
+                  id="box1"
+                  fill="#f00"
+                  stroke="#888888"
+                  stroke-width="3"
+                  />
+            <rect
+                  width="200"
+                  height="100"
+                  x="212"
+                  y="40"
+                  id="box2"
+                  fill="#0f0"
+                  stroke="#888888"
+                  stroke-width="3" />
+         </g>
+      </svg>
+      */
+      });
+
+      var draw = SVG('drawing'); // get the SVG element from the HTML
+      //console.log(rawSVG);
+
+      var importedSVG = draw.svg(rawSVG); // load imported SVG
+
+
+      var box1 = importedSVG.get('box1');
+      var box2 = importedSVG.get('box2');
+
+      // these won't really work.. mixinf jQuery and others
+      //var box1 = $('#box1');
+      //var box2 = SVG.get('box2');
+      //var box2 = document.getElementById('box2');
+      //console.log(box2);
+
+
+      // bind events: see http://documentup.com/wout/svg.js#events for more types
+      // like:  click, dblclick, mousedown, mouseup, mouseover, mouseout, mousemove,
+      //        touchstart, touchmove, touchleave, touchend and touchcancel
+
+      box1.on('click', function() { 
+        // "this" means the button that was pushed (like saying "me")
+         this.animate(2000)
+              .dy(50)
+              .attr({fill:'#04f'});
+      });
+      
+      // also 
+      box2.on('mousedown', function() { 
+         this.animate(100).attr({fill:'#00f'});
+      });
+      box2.on('mouseup', function() { 
+         this.animate(100).attr({fill:'#0f0'});
+      });
+
+      
+   });
+      
+   </script>
+</html>
