@@ -1,0 +1,131 @@
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>SVG Import Tester</title>
+      <style type="text/css">
+         body 
+         {
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin: 10%;
+            background: #eee;
+         }
+         div
+         {
+          max-width: 80%;
+          margin: 4% auto;
+         }
+      </style>
+
+   </head>
+   <body>
+    <div>Importing an SVG from Illustrator to animate using SVG.js</div>
+
+   <!-- SVG drawing for javscript fun -->
+   <div id="drawing">
+   </div>
+   </body>
+   
+   <!-- svg.js -->
+   <script language="javascript" src="../lib/svg.min.js"></script>
+  
+  <!-- svg.js parser from https://github.com/wout/svg.parser.js -->
+   <script language="javascript" src="../lib/svg.parser.min.js"></script>
+   
+<!-- svg.js parser from https://github.com/wout/svg.parser.js -->
+   <script language="javascript" src="../lib/svg.easing.min.js"></script>
+  
+
+
+   <!-- https://github.com/wout/svg.import.js -->
+   <script language="javascript" src="../lib/svg.import.1.0.1.min.js"></script>
+   
+   <!-- jquery -->
+   <script type="text/javascript" src="../lib/jquery-1.11.2.min.js"></script>
+
+   <!-- multiline strings from https://github.com/sindresorhus/multiline -->
+   <script type="text/javascript" src="../lib/multiline.browser.js"></script>   
+   
+
+   <!-- finally, our script! -->
+   <script type="text/javascript">
+      //
+      // (c) 2015 Evan Raskob e.raskob@rave.ac.uk 
+      //
+
+   //$( console.log( "HEY!") );
+
+
+   $( function() {
+      
+      // load out SVG - paste from Illustrator here
+      // see https://github.com/sindresorhus/multiline for examples
+      //
+      // see this image for Adobe Illustrator export settings:
+      // https://drive.google.com/file/d/0B01q99xxaTw_RkRHWU5wS2tpbjA/view?usp=sharing
+
+      var rawSVG = multiline(function(){
+      /*
+      <svg version="1.1" id="buttons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    viewBox="0 0 560 960" enable-background="new 0 0 560 960" xml:space="preserve">
+
+      <path id="stopButton" fill="#00FF00" stroke="#000000" stroke-miterlimit="10" d="M514.5,779.5c0,6.6-5.4,12-12,12h-446
+         c-6.6,0-12-5.4-12-12v-116c0-6.6,5.4-12,12-12h446c6.6,0,12,5.4,12,12V779.5z"/>
+
+      <path id="startButton" fill="#FF1D25" stroke="#000000" stroke-miterlimit="10" d="M515.5,593.5c0,6.6-5.4,12-12,12h-446
+         c-6.6,0-12-5.4-12-12v-116c0-6.6,5.4-12,12-12h446c6.6,0,12,5.4,12,12V593.5z"/>
+      </svg>
+      */
+      });
+
+      var draw = SVG('drawing'); // get the SVG element from the HTML
+      
+      //console.log(rawSVG);
+
+      var importedSVG = draw.svg(rawSVG); // load imported SVG
+
+      var startButton = importedSVG.get('startButton'); //get by id
+      var stopButton = importedSVG.get('stopButton'); // get by id
+
+      // these won't really work.. mixing jQuery and others
+      //var box1 = $('#box1');
+      //var box2 = SVG.get('box2');
+      //var box2 = document.getElementById('box2');
+      //console.log(box2);
+
+
+      // bind events: see http://documentup.com/wout/svg.js#events for more types
+      // like:  click, dblclick, mousedown, mouseup, mouseover, mouseout, mousemove,
+      //        touchstart, touchmove, touchleave, touchend and touchcancel
+
+      startButton.on('click', function() { 
+        // "this" means the button that was pushed (like saying "me")
+         this.animate(200, SVG.easing.backInOut)
+              .dy(4)
+              .attr({fill:'#04f'})
+              .scale(1.5)
+              .after( function() {
+                  this.animate(200, SVG.easing.backInOut)
+                  .dy(-4)
+                  .attr({fill:'#f40'})
+                  .scale(1)
+              });
+              
+              
+      });
+      
+      // also 
+      stopButton.on('mousedown', function() { 
+         this.animate(100).attr({fill:'#00f'});
+      });
+      stopButton.on('mouseup', function() { 
+         this.animate(100).attr({fill:'#0f0'});
+      });
+
+      
+   });
+      
+   </script>
+</html>
