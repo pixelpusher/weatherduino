@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Websockets Lamp API Tester</title>
+    <style type="text/css">
+      body 
+      {
+        padding: 0;
+        margin: 12px;
+      }
+
+      /* Processing canvas */
+      canvas#defaultCanvas {
+        margin: 0 auto;
+        display: block;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!-- SVG drawing for javscript fun -->
+    <div id="drawing">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%">
+      </svg>
+    </div>
+
+
+    <!-- load all js last -->
+
+    <!-- p5 js -->
+    <!-- <script language="javascript" src="lib/p5.js"></script> -->
+    <!-- <script language="javascript" src="lib/p5.dom.js"></script> -->
+    <!-- <script language="javascript" src="lib/p5.sound.js"></script> -->
+
+    <!-- svg.js -->
+    <script language="javascript" src="lib/svg.min.js"></script>
+
+    <!-- websockets from nodejs -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- jquery -->
+    <script type="text/javascript" src="lib/jquery-1.11.2.min.js"></script>
+
+
+    <!-- finally, our script! -->
+    <script type="text/javascript">
+      //
+      // by Evan Raskob info@pixelist.info 2015
+      //
+      
+      
+      //change LOCALHOST to your IP to enable connecting from other devices
+
+      var socket = io.connect('http://localhost:8080');
+
+      // if we're using SVG.js
+      var draw = SVG('drawing'); // get the SVG element from the HTML
+      
+      //
+      // websockets
+      //
+
+      // on connection to nodeJS server
+      socket.on('connect', function() 
+      {
+        console.log("***********connected to server");
+        
+        turnOnLightFadeIn();
+        
+//////////// THIS IS WHERE INTERFACE CODE GOES /////////////////
+        
+        
+        // we can send colour data back to the server:
+        // we expect a color object like: { h: 255, s:255, v:255 }
+        // 
+        function changeColor(c)
+        {
+          socket.emit('color', c);
+        }
+
+        
+        function turnOnLightFadeIn( )
+        {
+          var brightness = 0;
+          
+          console.log("turning light on : " + brightness);
+          
+          var brighten = function() {
+            
+            socket.emit('color', { h: 255, s:255, v:brightness });
+            
+            brightness = brightness + 5;
+            
+            if (brightness <= 255)
+            {
+              setTimeout(brighten, 40);
+              //console.log(brightness);
+            }
+          }
+          
+          socket.emit('color', { h: 255, s:255, v:0 });
+          setTimeout(brighten, 200);
+          
+        }
+        
+
+        // draw a rectangle when we connect and fade it in
+        
+        var blueButton =  draw.rect(100, 100)
+              .radius(10)
+              .attr({ fill: '#fff' });
+        var blueButtonTxt = draw.text("hue up").dx(25);
+
+        blueButton.animate(1200)
+              .attr({ fill: '#09F' });
+/*
+        var hueDownButton =  draw.rect(100, 100)
+              .radius(10)
+              .x( hueUpButton.x() + hueUpButton.width() + 50)
+              .attr({ fill: '#fff' });
+
+        var hueDownTxt = draw.text("hue down").x( hueDownButton.x() + 25 );
+
+        hueDownButton.animate(1200)
+              .attr({ fill: '#f06' });
+*/
+        
+        // send the color object with blue in it to the websockets server
+        
+        blueButton.click( 
+          function() {
+            changeColor( 
+              {
+                h:204,
+                s:100,
+                v:100 
+              } 
+            ); 
+          }
+        );
+        
+        //hueDownButton.click( hueDown );
+
+
+        //
+        // we can receive messages from the server (arduino)
+        //
+        socket.on('message', function (data) 
+        {
+          
+          // do something... choose random hue and fade over 1 sec
+          
+          console.log("received data for message : " + data);    
+            
+          var redVal = (Math.random()*16).toString(16);
+          console.log("red value: " + redVal);
+          
+          myRect.animate(1000).attr({ fill: '#' + redVal + 'fb' })
+        });
+        
+        
+        
+        //
+        // make this receive message from a sensor
+        //
+        socket.on('position', function (data) 
+        {
+
+          // do something... choose random hue and fade over 1 sec
+
+          console.log("received data for message : " + data);    
+
+          // change position... somehow...
+          // http://documentup.com/wout/svg.js#manipulating-elements
+          // myRect.animate(1000).attr({ fill: '#afb' })
+        });
+        
+
+      });
+    </script>
+
+  </body>
+</html>

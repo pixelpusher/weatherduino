@@ -3,7 +3,8 @@ void setup()
 {
   // start serial port at 9600 bps and wait for port to open:
   Serial.begin(9600);
-
+  pinMode(13,OUTPUT);
+  
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
