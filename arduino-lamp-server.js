@@ -69,12 +69,38 @@ io.sockets.on('connection', function (socket)
     console.log("WEBSOCKETS MSG::::color: ");
     console.log(color);
     
-    var cmd = 'c' + color.h + ',' + color.s + ',' + color.v; 
-    console.log( cmd );
+    var cmd = 'c' + color.h + ',' + color.s + ',' + color.v + "\n"; 
+    var buffer = new Buffer(cmd, 'ascii');
     
-    arduino.write( cmd , function(err, results) {
-      //console.log('err ' + err);
-      //console.log('results ' + results);
+    //var cmd = "c";
+    
+    /*
+    cmd += String.fromCharCode((color.h) & 0xff);
+    cmd += String.fromCharCode((color.s) & 0xff);
+    cmd += String.fromCharCode((color.v) & 0xff);
+    */
+    
+    // write ascii!
+    /*
+    var cmd = new Buffer(4, 'binary');
+    cmd.writeUInt8(99,0,1);
+    cmd.writeUInt32LE(color.h,1,1);
+    cmd.writeUInt32LE(color.s,2,1);
+    cmd.writeUInt32LE(color.v,3,1);
+    cmd.writeUInt32LE(100,4,1); // write stop bit 'd'
+    */
+    
+    /*
+    cmd[1] = String.fromCharCode((color.h) & 0xff);
+    cmd[2] = String.fromCharCode((color.s) & 0xff);
+    cmd[3] = String.fromCharCode((color.v) & 0xff);
+    */
+    console.log( "sending cmd:" + buffer );
+    //console.log( cmd.length );
+    
+    arduino.write( buffer, function(err, results) {
+      console.log('err ' + err);
+      console.log('results ' + results);
     });
   });
 
@@ -161,7 +187,7 @@ serialport.list(function(err, result) {
 
 
   arduino = new serialport.SerialPort(portName, {
-     baudRate: 115200,
+     baudRate: 57600,
      // look for return and newline at the end of each data packet:
      parser: serialport.parsers.readline("\r\n")
    });
@@ -169,12 +195,12 @@ serialport.list(function(err, result) {
 
   arduino.on('open', function() {
     console.log('port open. Data rate: ' + this.options.baudRate);
-
-    //changeHue();
+    console.log(this.options);
   })
 
   
   arduino.on('data', function(data) {
+    console.log("data:");
     console.log(data);
   });
 
@@ -190,16 +216,6 @@ serialport.list(function(err, result) {
   arduino.on('close', showPortClose);
   
   arduino.on('error', showError);
-
-  // send some data to the Arduino, then do it again:
-
-  function changeHue()
-  {
-    arduino.write('h');
-
-    setTimeout(changeHue, 1500);
-  }
-
 
   }
 });

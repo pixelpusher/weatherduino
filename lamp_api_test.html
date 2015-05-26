@@ -90,19 +90,19 @@
           
           var brighten = function() {
             
-            socket.emit('color', { h: 255, s:255, v:brightness });
+            socket.emit('color', { h: 255, s:0, v:brightness });
             
             brightness = brightness + 5;
             
             if (brightness <= 255)
             {
-              setTimeout(brighten, 40);
+              setTimeout(brighten, 20);
               //console.log(brightness);
             }
           }
           
-          socket.emit('color', { h: 255, s:255, v:0 });
-          setTimeout(brighten, 200);
+          socket.emit('color', { h: 255, s:0, v:0 });
+          setTimeout(brighten, 40);
           
         }
         
