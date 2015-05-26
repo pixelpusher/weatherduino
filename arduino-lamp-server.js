@@ -1,9 +1,36 @@
 //
-// bare-serial-arduino.js (c) 2015 by Evan Raskob e.raskob@rave.ac.uk
+// arduino-lamp-server.js (c) 2015 by Evan Raskob e.raskob@rave.ac.uk
 //  
-// just a simple starting point for connecting to an Arduino using the serial port
-// and sending it some data!
+// This sets up a web server connected to an Arduino with a NeoPixel ring
+// working like a budget Philips Lumen system, using an HTML/JS front end
+// that uses websockets to communicate back to this NodeJS server.
 // 
+
+
+/////////////////////////////////////////////////////////////
+// include Arduino-communications library --------------------------------------
+// from Nick Rothwell at https://github.com/cassiel/arduino-polyglot
+/////////////////////////////////////////////////////////////
+var commsLib = require("./node_lib/comms");
+
+// these map character commands to local functions, for instance '!' to a print
+var arduinoCallbacks = 
+{
+  '!': function(data) 
+  {
+    return console.log("CALLBACK: received ! from Arduino");
+  }
+};
+
+// this is the communication object that represents the Arduino attached via USB (serial)
+
+var arduino = new commsLib.Comms(
+  "", // default to first arduino
+  { baudrate: 57600 }, 
+  arduinoCallbacks
+);
+
+// end including Arduino-communications library ---------------------------------
 
 
 /////////////////////////////////////////////////////////////
@@ -15,12 +42,10 @@
 
 // http://localhost:8080/FILENAME.html
 
-
 // port server should run on, must be >= 8000
 var port = 8080;
 
 // start the server
-
 var connect = require('connect');
 var serveStatic = require('serve-static');
 var server = connect();
@@ -69,39 +94,8 @@ io.sockets.on('connection', function (socket)
     console.log("WEBSOCKETS MSG::::color: ");
     console.log(color);
     
-    var cmd = 'c' + color.h + ',' + color.s + ',' + color.v + "\n"; 
-    var buffer = new Buffer(cmd, 'ascii');
-    
-    //var cmd = "c";
-    
-    /*
-    cmd += String.fromCharCode((color.h) & 0xff);
-    cmd += String.fromCharCode((color.s) & 0xff);
-    cmd += String.fromCharCode((color.v) & 0xff);
-    */
-    
-    // write ascii!
-    /*
-    var cmd = new Buffer(4, 'binary');
-    cmd.writeUInt8(99,0,1);
-    cmd.writeUInt32LE(color.h,1,1);
-    cmd.writeUInt32LE(color.s,2,1);
-    cmd.writeUInt32LE(color.v,3,1);
-    cmd.writeUInt32LE(100,4,1); // write stop bit 'd'
-    */
-    
-    /*
-    cmd[1] = String.fromCharCode((color.h) & 0xff);
-    cmd[2] = String.fromCharCode((color.s) & 0xff);
-    cmd[3] = String.fromCharCode((color.v) & 0xff);
-    */
-    console.log( "sending cmd:" + buffer );
-    //console.log( cmd.length );
-    
-    arduino.write( buffer, function(err, results) {
-      console.log('err ' + err);
-      console.log('results ' + results);
-    });
+    // transmit color codes to the Arduino
+    arduino.xmit('c', [color.h, color.s, color.v]);
   });
 
 
@@ -109,11 +103,7 @@ io.sockets.on('connection', function (socket)
 
     console.log("WEBSOCKETS MSG::::off");
     
-    var cmd = 'o'; 
-    
-    console.log( cmd );
-
-    arduino.write( cmd );
+    arduino.xmit('o', [0]); // send a 0
   });
 
 
@@ -121,11 +111,7 @@ io.sockets.on('connection', function (socket)
 
     console.log("WEBSOCKETS MSG::::on");
 
-    var cmd = 'n'; 
-
-    console.log( cmd );
-
-    arduino.write( cmd );
+    arduino.xmit('n', [0]); // send a 0
   });
   
 
@@ -145,81 +131,6 @@ io.sockets.on('error', function (data) {
 ///////  WEB SOCKETS CODE ENDS HERE
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
-
-
-
-
-var serialport = require("serialport"); // serialport library
-
-var rport = /usb|acm|$com/i;  // pattern to match in strings
-
-var portName = "";
-
-var arduino = {}; // the empty arduino object that we'll get from the serial port later
-
-
-
-serialport.list(function(err, result) {
-  var ports = [],
-      length;
-  
-  //console.log(result);
-  
-  result.forEach(function(port) {
-    
-    if ( rport.test(port.comName) ) {
-      ports.push(port.comName);
-      console.log(port.comName);
-    }
-  });
-
-  length = ports.length;
- // If no ports are detected when scanning /dev/, then there is
-  // nothing left to do and we can safely exit the program
-  if ( !length ) {
-    // Alert user that no devices were detected
-    console.log("No USB devices detected" );
-  }
-  else
-  {
-    console.log("Arduino ports found: " + ports);
-    portName = ports[0];
-
-
-  arduino = new serialport.SerialPort(portName, {
-     baudRate: 57600,
-     // look for return and newline at the end of each data packet:
-     parser: serialport.parsers.readline("\r\n")
-   });
-
-
-  arduino.on('open', function() {
-    console.log('port open. Data rate: ' + this.options.baudRate);
-    console.log(this.options);
-  })
-
-  
-  arduino.on('data', function(data) {
-    console.log("data:");
-    console.log(data);
-  });
-
-
-  function showPortClose() {
-   console.log('port closed.');
-  }
-
-  function showError(error) {
-   console.log('Serial port error: ' + error);
-  }
-
-  arduino.on('close', showPortClose);
-  
-  arduino.on('error', showError);
-
-  }
-});
-
 
 
 
