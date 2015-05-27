@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arduino Websockets Lamp API Tester</title>
+    
     <style type="text/css">
       body 
       {
         padding: 0;
         margin: 12px;
+        font-family: sans-serif;
       }
 
       /* Processing canvas */
@@ -16,6 +18,45 @@
         margin: 0 auto;
         display: block;
       }
+      
+      #drawing {
+        position:absolute;
+        top:0;
+        left:0;
+        /* iPhone height */
+        height: 1334px;
+        width: 750px;
+        z-index: 0; /* in the back */
+      }
+      
+      .dragdealer {
+        position: relative;
+        top: 110px;
+        right:auto;
+        height: 24px;
+        background: #EEE;
+        z-index: 1; /* in front of the background */
+      }
+      .dragdealer .handle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+      }
+      .dragdealer .red-bar {
+        width: 24px;
+        height: 24px;
+        background: #770000;
+        color: #FFF;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: center;
+        border-radius: 6px;
+      }
+      .dragdealer .disabled {
+        background: #898989;
+      }  
+      
     </style>
 
   </head>
@@ -23,11 +64,23 @@
 
     <!-- SVG drawing for javscript fun -->
     <div id="drawing">
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%">
-      </svg>
+    
     </div>
 
+    <div id="h-slider" class="dragdealer">
+      <div class="handle red-bar">
+        <span class="value">0%</span>
+      </div>
+    </div>
+    
 
+    <div id="g-slider" class="dragdealer">
+      <div class="handle green-bar">
+        <span class="value">0%</span>
+      </div>
+    </div>
+    
+    
     <!-- load all js last -->
 
     <!-- p5 js -->
@@ -44,6 +97,8 @@
     <!-- jquery -->
     <script type="text/javascript" src="lib/jquery-1.11.2.min.js"></script>
 
+    <!-- dragdealer slider from http://skidding.github.io/dragdealer/ -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dragdealer/0.9.8/dragdealer.min.js"></script>
 
     <!-- finally, our script! -->
     <script type="text/javascript">
@@ -68,9 +123,39 @@
       {
         console.log("***********connected to server");
         
-        turnOnLightFadeIn();
         
 //////////// THIS IS WHERE INTERFACE CODE GOES /////////////////
+        
+        var currentColor = {
+          h: 0,
+          s: 255,
+          v: 50 
+        };
+        
+        
+        //turnOnLightFadeIn();
+        
+        
+        changeColor( currentColor );
+        
+        
+        // in the animationCallback, you get a number (x) from 0.0 - 1.0
+        $( function() {
+          console.log("document loaded");
+          
+          // copy this for every slider you use - change the 'h-slider' to the css id
+          var hsvSlider = new Dragdealer('h-slider', {
+            animationCallback: function(x, y) {
+              $('#h-slider .value').text(Math.round(x * 100));
+              
+              var hue = Math.round(x*255); // round to whole number from 0-255
+              currentColor.h = hue;
+              socket.emit('color', currentColor);
+            }
+          });
+          
+          
+        });
         
         
         // we can send colour data back to the server:
@@ -103,7 +188,6 @@
           
           socket.emit('color', { h: 255, s:0, v:0 });
           setTimeout(brighten, 40);
-          
         }
         
 
@@ -111,7 +195,7 @@
         
         var blueButton =  draw.rect(100, 100)
               .radius(10)
-              .attr({ fill: '#fff' });
+              .attr({ fill: '#fff', cursor: 'pointer' });
         var blueButtonTxt = draw.text("blue hue").dx(25);
 
         blueButton.animate(1200)
@@ -120,7 +204,7 @@
         var offButton =  draw.rect(100, 100)
               .radius(10)
               .x( blueButton.x() + blueButton.width() + 50)
-              .attr({ fill: '#ddd', stroke:'#000' });
+              .attr({ fill: '#ddd', stroke:'#000', cursor: 'pointer' });
 
         var offTxt = draw.text("off").x( offButton.x() + 25 );
 
