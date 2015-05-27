@@ -49,6 +49,20 @@ var arduino = new commsLib.Comms(
 
 // http://localhost:8080/FILENAME.html
 
+/*  MAKING THIS ACCESSIBLE FROM OTHER MACHINES ***********
+ 
+To get the ip address, open System Preferences and have a look at Network, or just type in "ifconfig -a | grep inet" into the Terminal.  (this server also prints it out to the console when it runs) 
+
+The important file is the client one (whichever you're using), change the server IP from 'localhost' to your IP address.
+
+Then, to get it to simply work on port 80 (standard web port so you don't need the :8080) you turn on the OS X firewall (in Security, in System Preferences) and then in Terminal type in:
+
+"sudo ipfw add 100 fwd 127.0.0.1,8080 tcp from any to any 80 in"
+
+If you're really slick, you can set your router to give your machine the same IP address all the time based on its MAC address, so you don't have to change the ip addresses in the code again, and you can also give it a better name rather than asking people to type "192.168.0.3" or whatever into the URL bar.
+*/
+
+
 // port server should run on, must be >= 8000
 var port = 8080;
 

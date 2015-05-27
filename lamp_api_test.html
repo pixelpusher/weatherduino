@@ -73,13 +73,14 @@
       </div>
     </div>
     
+<!-- this makes another slider... you'll also need to add a function in the javascript below
 
     <div id="g-slider" class="dragdealer">
       <div class="handle green-bar">
         <span class="value">0%</span>
       </div>
     </div>
-    
+-->
     
     <!-- load all js last -->
 
@@ -135,8 +136,7 @@
         
         //turnOnLightFadeIn();
         
-        
-        changeColor( currentColor );
+        //changeColor( currentColor );
         
         
         // in the animationCallback, you get a number (x) from 0.0 - 1.0
@@ -144,15 +144,18 @@
           console.log("document loaded");
           
           // copy this for every slider you use - change the 'h-slider' to the css id
-          var hsvSlider = new Dragdealer('h-slider', {
+          var hSlider = new Dragdealer('h-slider', {
             animationCallback: function(x, y) {
               $('#h-slider .value').text(Math.round(x * 100));
               
               var hue = Math.round(x*255); // round to whole number from 0-255
               currentColor.h = hue;
               socket.emit('color', currentColor);
-            }
+            },
+            x: currentColor.h/255 // set the value of this slider based on the hue
           });
+          
+          //hSlider.setValue(currentColor.h/255, 0, true);
           
           
         });
@@ -195,7 +198,8 @@
         
         var blueButton =  draw.rect(100, 100)
               .radius(10)
-              .attr({ fill: '#fff', cursor: 'pointer' });
+              
+        .attr({ fill: '#fff', cursor: 'pointer' });
         var blueButtonTxt = draw.text("blue hue").dx(25);
 
         blueButton.animate(1200)
