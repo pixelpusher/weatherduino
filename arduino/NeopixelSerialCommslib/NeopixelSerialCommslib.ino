@@ -23,17 +23,22 @@ HSVColori myColor(100,255,100); // h,s,v
 
 CljComms comms;
 
+//
+// I expect 'L 1' or 'L 0'
+// 
+
 void do_LED(int n, byte *args) {
   if (n >= 1) {
-    byte how = args[0];
+    
+    byte state = args[0]; // 0-255
 
-    if (how > 0) {
+    if (state == 1) {
       digitalWrite(LED, HIGH);
     } 
     else {
       digitalWrite(LED, LOW);
     }
-    comms.xmit('L', 1, &how);
+    comms.xmit('L', 1, &state);
   }
 
 }

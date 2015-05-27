@@ -101,12 +101,18 @@
           console.log(inMessage.map(function(i) {
             return ("0" + i.toString(16)).slice(-2);
           }).join(" "));
+          
           if (inMessage.length > 0 && inMessage[0] > 0x80) {
-            cmd = inMessage[0] & 0x7F;
+            cmd = String.fromCharCode(inMessage[0] & 0x7F);
             data = [];
             len = (inMessage.length - 2) / 2;
-            for (i = j = 0, ref = len - 1; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+            for (i = j = 0, ref = len - 1; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) 
+            {
               data.push((inMessage[1 + i * 2] << 4) | inMessage[2 + i * 2]);
+            }
+            if (callbacks[cmd] )
+            {
+              callbacks[cmd](data);
             }
           }
           return inMessage = [];

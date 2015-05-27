@@ -19,7 +19,14 @@ var arduinoCallbacks =
   '!': function(data) 
   {
     return console.log("CALLBACK: received ! from Arduino");
+  },
+  'L': function(data) 
+  {
+    console.log("CALLBACK: received L from Arduino");
+    console.log(data);
+    return; 
   }
+  
 };
 
 // this is the communication object that represents the Arduino attached via USB (serial)
@@ -96,7 +103,6 @@ io.sockets.on('connection', function (socket)
     
     // transmit color codes to the Arduino
     arduino.xmit('c', [color.h, color.s, color.v]);
-    //arduino.xmit('L', [1]);
   });
 
 
@@ -105,6 +111,8 @@ io.sockets.on('connection', function (socket)
     console.log("WEBSOCKETS MSG::::off");
     
     arduino.xmit('o', [0]); // send a 0
+    
+    arduino.xmit('L', [1]);
   });
 
 
@@ -113,6 +121,7 @@ io.sockets.on('connection', function (socket)
     console.log("WEBSOCKETS MSG::::on");
 
     arduino.xmit('n', [0]); // send a 0
+    arduino.xmit('L', [0]);
   });
   
 
