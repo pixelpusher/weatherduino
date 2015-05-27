@@ -112,21 +112,19 @@
         var blueButton =  draw.rect(100, 100)
               .radius(10)
               .attr({ fill: '#fff' });
-        var blueButtonTxt = draw.text("hue up").dx(25);
+        var blueButtonTxt = draw.text("blue hue").dx(25);
 
         blueButton.animate(1200)
               .attr({ fill: '#09F' });
-/*
-        var hueDownButton =  draw.rect(100, 100)
+
+        var offButton =  draw.rect(100, 100)
               .radius(10)
-              .x( hueUpButton.x() + hueUpButton.width() + 50)
-              .attr({ fill: '#fff' });
+              .x( blueButton.x() + blueButton.width() + 50)
+              .attr({ fill: '#ddd', stroke:'#000' });
 
-        var hueDownTxt = draw.text("hue down").x( hueDownButton.x() + 25 );
+        var offTxt = draw.text("off").x( offButton.x() + 25 );
 
-        hueDownButton.animate(1200)
-              .attr({ fill: '#f06' });
-*/
+        var on_off_state = 0;
         
         // send the color object with blue in it to the websockets server
         
@@ -142,7 +140,30 @@
           }
         );
         
-        //hueDownButton.click( hueDown );
+        offButton.click( 
+          function() {
+            on_off_state = 1 - on_off_state;
+            
+            if (on_off_state)
+            {
+              offTxt.text("on");
+              offTxt.animate(200)
+              .attr({ fill:'#000' });
+              offButton.animate(200)
+                .attr({ fill: '#fff', stroke:'#000' });
+              socket.emit('off', 0);
+            }
+            else
+            {
+              offTxt.text("off");
+              offTxt.animate(200)
+                .attr({ fill:'#fff' });
+              offButton.animate(200)
+                .attr({ fill: '#888', stroke:'#000' });
+              socket.emit('on', 0);
+            } 
+          }
+        );
 
 
         //

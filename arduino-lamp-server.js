@@ -26,7 +26,7 @@ var arduinoCallbacks =
 
 var arduino = new commsLib.Comms(
   "", // default to first arduino
-  { baudrate: 57600 }, 
+  { baudrate: 28800 }, 
   arduinoCallbacks
 );
 
@@ -96,6 +96,7 @@ io.sockets.on('connection', function (socket)
     
     // transmit color codes to the Arduino
     arduino.xmit('c', [color.h, color.s, color.v]);
+    //arduino.xmit('L', [1]);
   });
 
 

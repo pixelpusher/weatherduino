@@ -36,6 +36,7 @@
       // search for port
       if (!this.port)
       {
+        var me = this;
         // load arduino by default
         serialport.list(function(err, result) {
 
@@ -68,11 +69,11 @@
           else
           {
             console.log("Arduino ports found: " + ports);
-            this.port = ports[0];
-            this.__serialPort = new serialport.SerialPort(this.port, this.options);
-            this.__serialPort.on("open", opener.bind(this));
-            this.__serialPort.on("data", this.__onDataFunction);
-            this.__serialPort.on("error", this.__onErrorFunction);
+            me.port = ports[0];
+            me.__serialPort = new serialport.SerialPort(me.port, me.options);
+            me.__serialPort.on("open", opener.bind(me));
+            me.__serialPort.on("data", me.__onDataFunction);
+            me.__serialPort.on("error", me.__onErrorFunction);
           }
         // end serial port list
         });
@@ -107,7 +108,6 @@
             for (i = j = 0, ref = len - 1; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
               data.push((inMessage[1 + i * 2] << 4) | inMessage[2 + i * 2]);
             }
-            console.log("data", data);
           }
           return inMessage = [];
         }
@@ -139,7 +139,7 @@
         a.push(b & 0x0F);
       }
       a.push(0x80);
-      console.log(a);
+      //console.log("sending:" + a);
       return this.rawWrite(a);
     };
 
